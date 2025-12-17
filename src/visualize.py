@@ -51,7 +51,7 @@ class Visualization:
         self,
         nfolds:list[str],
         nimages:int = 5,
-        ) -> plt.figure:
+        ) -> None:
         """Selecciona aleatoriamente una carpeta y muestra algunas imagenes"""
 
         plt.figure(figsize=(15,15))
@@ -62,17 +62,17 @@ class Visualization:
 
         for idx, nombreimg in enumerate(imgs_to_show):
             plt.subplot(1, nimages, idx+1)
-            plt.title(folder)
+            plt.title(str(folder))
             imagen = mpimg.imread(os.path.join(path, nombreimg)) # mpimg.imread lee los pixeles
             plt.imshow(imagen)
 
-        return plt.figure
+        return
 
     def show_images_different_folder(
         self,
         nfolds:list[str],
         nimages:int = 5,
-        ) -> plt.figure:
+        ) -> None:
         """Selecciona aleatoriamente una carpeta y muestra algunas imagenes"""
 
         plt.figure(figsize=(15,15))
@@ -88,7 +88,5 @@ class Visualization:
         for idx, nombreimg in enumerate(imgs_to_show):
             plt.subplot(1, nimages, idx+1)
             plt.title(nombreimg.split("IMG")[0][-2])
-            imagen = mpimg.imread(os.path.join(path, nombreimg)) # mpimg.imread lee los pixeles
+            imagen = mpimg.imread(os.path.join(self.rutas.TRAIN_PATH, nombreimg)) # mpimg.imread lee los pixeles
             plt.imshow(imagen)
-
-        return plt.figure

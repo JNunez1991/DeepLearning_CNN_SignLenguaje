@@ -6,13 +6,10 @@ import random
 import shutil
 from dataclasses import dataclass
 from glob import glob
-from typing import Protocol
+from typing import Protocol, Any
 
 import keras
-import tensorflow as tf
 from tqdm import tqdm
-
-
 
 class RutasProtocol(Protocol):
     """Protocolo de rutas"""
@@ -28,19 +25,21 @@ class PreProcess:
 
     rutas: RutasProtocol
     train_size: int = 180
+    ncopies: int = 5
 
     def run_all(self, nfolds:list[str]) -> None:
         """Se encarga de ejecutar el paso a paso del proyecto"""
 
         self.create_subfolders(nfolds)
         self.copy_imgs_to_train_test(nfolds)
+        self.data_augmentation()
 
     def create_subfolders(self, nfolds:list[str]) -> None:
         """Creo las subcarpetas dentro de Train/Test"""
 
         for fold in nfolds:
-            os.mkdir(os.path.join(self.rutas.TRAIN_PATH, fold))
-            os.mkdir(os.path.join(self.rutas.TEST_PATH, fold))
+            os.mkdir(os.path.join(self.rutas.TRAIN_PATH, str(fold)))
+            os.mkdir(os.path.join(self.rutas.TEST_PATH, str(fold)))
         return
 
     def copy_imgs_to_train_test(self, nfolds:list[str]) -> None:
@@ -50,27 +49,33 @@ class PreProcess:
             files = glob(os.path.join(self.rutas.IMGS_PATH, fold, '*'))
 
             train_imgs = random.sample(files, self.train_size)
-            for idx, img in enumerate(train_imgs):
-                fullname = os.path.join(self.rutas.TRAIN_PATH, str(fold), f"{str(idx)}.jpg")
-                shutil.copy2(img, fullname)
-
-            test_imgs = list(set(files) - set(train_imgs))
-            for idx, img in enumerate(test_imgs):
-                fullname = os.path.join(self.rutas.TEST_PATH, str(fold), f"{str(idx)}.jpg")
-                shutil.copy2(img, fullname)
-
+            test_imgs = list( set(files) - set(train_imgs) )
+            self.move_copies(train_imgs, self.rutas.TRAIN_PATH, str(fold))
+            self.move_copies(test_imgs, self.rutas.TEST_PATH, str(fold))
         return
 
-    def data_augmentation(self, nfolds:list[str]) -> None:
+    def move_copies(self, files:list[str], dest_path:str, fold:str) -> None:
+        """Genera copia de los archivos desde el origen a la subcarpeta destino"""
+
+        for idx, img in enumerate(files):
+            fullname = os.path.join(dest_path, fold, f"{str(idx)}.jpg")
+            shutil.copy2(img, fullname)
+        return
+
+    def data_augmentation(self) -> None:
         """A las imagenes de cada subcarpeta, les aplico data augmentation"""
 
-        parameters = self.set_augmentation_parameters()
+        dataset = self.set_dataset()
+        file_paths = dataset.file_paths # type:ignore
+        augm_model = self.set_augmentation_parameters()
 
-        for fold in nfolds:
-            dataset = self.set_dataset(str(fold))
-
-    ###  QUEDA POR VER COMO GENERAR/GUARDAR LAS IMAGENES AUMENTADAS
-
+        for idx, (image, _) in enumerate(tqdm(dataset, desc="Aumentando Dataset")):
+            original_name = os.path.basename(file_paths[idx])[:-4] # quito la extension
+            for j in range(self.ncopies):
+                augmented_img = augm_model(image, training=True)
+                final_img = keras.utils.array_to_img(augmented_img[0])
+                save_name = f"{original_name}_augm_{j}.jpg"
+                final_img.save(os.path.join(os.path.dirname(file_paths[idx]), save_name))
 
     def set_augmentation_parameters(self) -> keras.Sequential:
         """Parametros del aumento de datos"""
@@ -86,14 +91,18 @@ class PreProcess:
         ])
         return params
 
+    def set_dataset(self) -> list[Any]:
+        """
+        Utiliza image_dataset_from_directory, la cual toma como uno de sus parametros la
+        carpeta padre donde estan almacenadas las imagenes. Es necesario que cada categoria
+        tenga una subcarpeta dentro de ella. Dicha funcion detecta automaticamente la cantidad
+        de imagenes por clase
+        """
 
-    def set_dataset(self, fold:str) -> tf.data.Dataset:
-        """Seteo las imagenes a aplicarles data augmentation"""
-
-        dataset = keras.utils.image_dataset_from_directory(
-            os.path.join(self.rutas.TRAIN_PATH, fold),
+        data = keras.utils.image_dataset_from_directory(
+            self.rutas.TRAIN_PATH,
             image_size=(224, 224),
             batch_size=1,
             shuffle=False
         )
-        return dataset
+        return data

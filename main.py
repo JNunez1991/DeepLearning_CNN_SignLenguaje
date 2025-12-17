@@ -34,11 +34,11 @@ class Main:
         """Se encarga de ejecutar el paso a paso del proyecto"""
 
         # Cantidad de imagenes por subcarpeta, e imagenes de prueba
-        viz = Visualization(Rutas)
+        viz = Visualization(Rutas) # type:ignore
         folders = viz.run_all()
 
         # Generacion de Train/Test y Data Augmentation
-        preproc = PreProcess(Rutas)
+        preproc = PreProcess(Rutas) # type:ignore
         preproc.run_all(folders)
 
 
@@ -51,8 +51,8 @@ class Main:
         """Elimina todas las imagenes en las carpetas de Train/Test"""
 
         for fold in nfolds:
-            shutil.rmtree(os.path.join(Rutas.TRAIN_PATH, fold))
-            shutil.rmtree(os.path.join(Rutas.TEST_PATH, fold))
+            shutil.rmtree( os.path.join(Rutas.TRAIN_PATH, str(fold)) )
+            shutil.rmtree( os.path.join(Rutas.TEST_PATH, str(fold)) )
 
 
 if __name__ == "__main__":
