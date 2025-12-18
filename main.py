@@ -5,23 +5,6 @@ import os
 import shutil
 from dataclasses import dataclass
 
-# import imageio
-# import numpy as np
-# import pandas as pd
-# import tensorflow as tf
-# import tensorflow.keras as keras
-# from keras.models import load_model
-# from keras.callbacks import ModelCheckpoint
-# # from keras.preprocessing.image import ImageDataGenerator
-# from matplotlib import pyplot as plt, image as mpimg
-# from skimage import io, transform
-# from sklearn.model_selection import train_test_split
-# from sklearn.metrics import confusion_matrix, classification_report, accuracy_score
-# from tensorflow.keras.models import Sequential
-# from tensorflow.keras.layers import Dense, Conv2D, Flatten, MaxPooling2D, Dropout, Activation
-# from tensorflow.keras.optimizers import Adam, Nadam
-# from tensorflow.keras.callbacks import TensorBoard
-
 from config import Rutas
 from src import PreProcess, Visualization
 
@@ -34,12 +17,13 @@ class Main:
         """Se encarga de ejecutar el paso a paso del proyecto"""
 
         # Cantidad de imagenes por subcarpeta, e imagenes de prueba
-        viz = Visualization(Rutas) # type:ignore
-        folders = viz.run_all()
+        viz = Visualization() # type:ignore
+        folders = viz.run_all(Rutas.IMGS_PATH, "-. Imagenes Reales...")
 
-        # Generacion de Train/Test y Data Augmentation
-        preproc = PreProcess(Rutas) # type:ignore
-        preproc.run_all(folders)
+        # Generacion de carpetas Train/Test e imagenes con Data Augmentation
+        # preproc = PreProcess(Rutas) # type:ignore
+        # preproc.run_all(folders)
+        viz.run_all(Rutas.TRAIN_PATH, "- Imagenes con data augmentation...", aug=True)
 
 
         # # Elimino las imagenes de Train/Test para limpieza

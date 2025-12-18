@@ -70,11 +70,11 @@ class PreProcess:
         augm_model = self.set_augmentation_parameters()
 
         for idx, (image, _) in enumerate(tqdm(dataset, desc="Aumentando Dataset")):
-            original_name = os.path.basename(file_paths[idx])[:-4] # quito la extension
+            original_name = os.path.basename(file_paths[idx])[:-4] # quito la extension '.jpg'
             for j in range(self.ncopies):
                 augmented_img = augm_model(image, training=True)
                 final_img = keras.utils.array_to_img(augmented_img[0])
-                save_name = f"{original_name}_augm_{j}.jpg"
+                save_name = f"{original_name}_augm{j+1}.jpg"
                 final_img.save(os.path.join(os.path.dirname(file_paths[idx]), save_name))
 
     def set_augmentation_parameters(self) -> keras.Sequential:
