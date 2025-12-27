@@ -14,6 +14,7 @@ class DataAugmentation:
     """Clase que se encarga de analizar y pre-procesar las imagenes"""
 
     train_path:str
+    image_size:tuple[int, int]
     ncopies: int = 5
 
     def run_all(self) -> None:

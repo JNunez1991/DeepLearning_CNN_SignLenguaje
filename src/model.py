@@ -34,9 +34,9 @@ class Model:
     nfolders:int
     modelname:str
     version:str
+    img_size:tuple[int, int]
     epochs:int = 40
     batch_size:int = 32
-    img_size:tuple[int, int] = (100,100)
     mode:str = "max"
     metric:str = 'accuracy'
     label:str = "categorical"
