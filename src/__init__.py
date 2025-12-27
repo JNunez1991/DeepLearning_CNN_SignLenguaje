@@ -3,3 +3,5 @@
 
 from .preprocess import PreProcess
 from .visualize import Visualization
+from .model import Model
+from .augmentation import DataAugmentation
