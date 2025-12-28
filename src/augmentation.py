@@ -17,6 +17,11 @@ class DataAugmentation:
     image_size:tuple[int, int]
     ncopies: int = 5
 
+    def __post_init__(self):
+        """Se ejecuta luego de instanciar la clase"""
+
+        print("-. Aplicando Data Augmentation...")
+
     def run_all(self) -> None:
         """A las imagenes de cada subcarpeta, les aplico data augmentation"""
 

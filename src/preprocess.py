@@ -10,6 +10,8 @@ from typing import Protocol
 
 from tqdm import tqdm
 
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' # ignora los msjs de tensorflow
+
 class RutasProtocol(Protocol):
     """Protocolo de rutas"""
 
@@ -32,6 +34,8 @@ class PreProcess:
     def __post_init__(self):
         """Se ejecuta luego de instanciar la clase"""
 
+        print("")
+        print("-. Pre procesando datos...")
         self.train_path = os.path.abspath(self.rutas.TRAIN_PATH)
         self.validation_path = os.path.abspath(self.rutas.VAL_PATH)
         self.raw_images_path = os.path.abspath(self.rutas.IMGS_PATH)

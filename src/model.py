@@ -10,6 +10,7 @@ from pathlib import Path
 import keras
 import numpy as np
 import tensorflow as tf
+from keras.applications.vgg19 import VGG19
 from keras.callbacks import TensorBoard
 from keras.callbacks import ModelCheckpoint
 from keras.layers import Input, Dense, Conv2D, Flatten, MaxPooling2D, Dropout#, Activation
@@ -35,8 +36,9 @@ class Model:
     modelname:str
     version:str
     img_size:tuple[int, int]
-    epochs:int = 40
-    batch_size:int = 32
+    epochs:int
+    batch_size:int
+    use_tl:bool = False     # Transfer Learning
     mode:str = "max"
     metric:str = 'accuracy'
     label:str = "categorical"
@@ -48,9 +50,11 @@ class Model:
     def __post_init__(self):
         """Se ejecuta luego de instanciar la clase"""
 
+        print("")
+        print(f"-. Realizando entrenamiento con modelo {self.version.upper()}...")
         self.full_model_name = os.path.join(self.rutas.MODEL_PATH, self.modelname)
 
-    def run_all(self):
+    def run_all(self) -> Sequential:
         """Ejecuta todas las instancias del modelado"""
 
         data_train = self.get_data(self.rutas.TRAIN_PATH)
@@ -70,7 +74,7 @@ class Model:
             tensorboard=tensorboard,
             checkpoint=model_checkpoint,
         )
-        # self.eval_model(data_val)
+        return model
 
     def get_data(self, path:str) -> tf.data.Dataset:
         """Cargo las imagenes de train y test"""
@@ -91,9 +95,8 @@ class Model:
             self.full_model_name,
             mode=self.mode,
             monitor=self.monitor,
-            save_best_only=True
+            save_best_only=True,
         )
-
         return tensorbrd, checkpoint
 
     def set_model(self, dropout:float = 0.25) -> Sequential:
@@ -102,24 +105,39 @@ class Model:
         # al tamaño de las imagenes, le agrego los canales de color
         input_size_with_channels = (*self.img_size, 3)
 
-        model = Sequential(
-            [
-                Input(shape=input_size_with_channels),
+        if self.use_tl:
+            tl_base = VGG19(
+                 weights='imagenet',
+                 input_shape = input_size_with_channels,
+                 include_top = False,
+            )
+            tl_base.trainable = False
+            model = Sequential(
+                [
+                    tl_base,
+                    Dropout(dropout),
+                    Flatten(),
+                    Dense(self.nfolders, activation="softmax")
+            ])
+        else:
+            model = Sequential(
+                [
+                    Input(shape=input_size_with_channels),
 
-                Conv2D(32, kernel_size = (3, 3), padding = 'same', activation='relu'),
-                MaxPooling2D(pool_size = (2, 2)),
+                    Conv2D(32, kernel_size = (3, 3), padding = 'same', activation='relu'),
+                    MaxPooling2D(pool_size = (2, 2)),
 
-                Conv2D(64, kernel_size = (3, 3), padding = 'same', activation="relu"),
-                MaxPooling2D(pool_size = (2, 2)),
+                    Conv2D(64, kernel_size = (3, 3), padding = 'same', activation="relu"),
+                    MaxPooling2D(pool_size = (2, 2)),
 
-                Conv2D(128, kernel_size = (3, 3), padding = 'same', activation="relu"),
-                MaxPooling2D(pool_size = (2, 2)),
+                    Conv2D(128, kernel_size = (3, 3), padding = 'same', activation="relu"),
+                    MaxPooling2D(pool_size = (2, 2)),
 
-                Dropout(dropout),
-                Flatten(),
-                Dense(self.nfolders, activation = "softmax")
-            ],
-        )
+                    Dropout(dropout),
+                    Flatten(),
+                    Dense(self.nfolders, activation = "softmax")
+                ],
+            )
 
         opt = Adam(learning_rate=0.001)
         model.compile(
@@ -127,7 +145,6 @@ class Model:
             optimizer = opt, # type:ignore
             metrics = [self.metric],
         )
-
         return model
 
     def fit_model(
@@ -153,12 +170,49 @@ class Model:
         )
         return model
 
-    def eval_model(self):
+    # def evaluate_model(self):
+    #     """Evalua el modelo con la mejor performance"""
+
+    #     print("")
+    #     print(f"-. Cargando mejor modelo {self.version.upper}...")
+    #     data_val = self.get_data(self.rutas.VAL_PATH)
+    #     best_model = load_model(self.full_model_name)
+    #     scores = best_model.evaluate(data_val, verbose=1) # type:ignore
+    #     print('   -. Val loss:', scores[0])
+    #     print('   -. Val accuracy:', scores[1])
+
+
+@dataclass
+class EvalModel:
+    """Evalua un modelo luego de entrenado"""
+
+    rutas: RutasProtocol
+    modelname:str
+    img_size:tuple[int, int]
+    batch_size:int
+    label:str = "categorical"
+
+    def run_all(self, modelname:str):
         """Evalua el modelo con la mejor performance"""
 
-        print("-. Cargando mejor modelo...")
+        print(f"-. Evaluando resultados del mejor modelo {modelname.upper()}...")
+        model_name = f"model_{modelname}.keras"
+        full_model_name = os.path.join(self.rutas.MODEL_PATH, model_name)
+
         data_val = self.get_data(self.rutas.VAL_PATH)
-        best_model = load_model(self.full_model_name)
+        best_model = load_model(full_model_name)
+
         scores = best_model.evaluate(data_val, verbose=1) # type:ignore
-        print('     -. Val loss:', scores[0])
-        print('     -. Val accuracy:', scores[1])
+        print('   -. Val loss:', scores[0])
+        print('   -. Val accuracy:', scores[1])
+
+    def get_data(self, path:str) -> tf.data.Dataset:
+        """Cargo las imagenes de train y test"""
+
+        data = keras.utils.image_dataset_from_directory(
+            path,
+            image_size=self.img_size,
+            batch_size=self.batch_size,
+            label_mode=self.label,
+        )
+        return data # type:ignore

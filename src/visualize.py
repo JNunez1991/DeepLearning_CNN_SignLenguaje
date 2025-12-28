@@ -17,6 +17,11 @@ class Visualization:
     nfolders:list[str]
     augmented:bool = False
 
+    def __post_init__(self):
+        """Se ejecuta luego de instanciar la clase"""
+
+        print("-. Generando imagenes...")
+
     def run_all(self)-> None:
         """Se encarga de ejecutar el paso a paso del proyecto"""
 

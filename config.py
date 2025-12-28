@@ -4,9 +4,8 @@
 
 import os
 from dataclasses import dataclass
-from pathlib import Path
-
 from enum import StrEnum
+from pathlib import Path
 
 class Rutas(StrEnum):
     """Rutas del proyecto"""
@@ -16,9 +15,19 @@ class Rutas(StrEnum):
     VAL_PATH = os.path.join(Path(__file__).resolve().parent, "data", "processed", "val")
     MODEL_PATH = os.path.join(Path(__file__).resolve().parent, "models")
 
-
 @dataclass
 class ImageParameters:
     """Parametros de las imagenes"""
 
     DIMS: tuple[int, int] = (100, 100)
+    EPOCS: int = 40
+    BATCH: int = 32
+
+@dataclass
+class ModelNames:
+    """Nombres de los modelos a utilizar"""
+
+    RAW = "raw"
+    TRANSFER_LEARNING = "tl"
+    DATA_AUGMENTATION = "augmentation"
+    TRANSFER_AND_AUGMENTATION = "tlaugm"
