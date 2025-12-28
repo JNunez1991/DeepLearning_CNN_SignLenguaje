@@ -13,6 +13,7 @@ class Rutas(StrEnum):
     IMGS_PATH = os.path.join(Path(__file__).resolve().parent, "data", "raw")
     TRAIN_PATH = os.path.join(Path(__file__).resolve().parent, "data", "processed", "train")
     VAL_PATH = os.path.join(Path(__file__).resolve().parent, "data", "processed", "val")
+    TEST_PATH = os.path.join(Path(__file__).resolve().parent, "data", "processed", "test")
     MODEL_PATH = os.path.join(Path(__file__).resolve().parent, "models")
 
 @dataclass
@@ -23,8 +24,8 @@ class ImageParameters:
     EPOCS: int = 40
     BATCH: int = 32
 
-@dataclass
-class ModelNames:
+
+class ModelNames(StrEnum):
     """Nombres de los modelos a utilizar"""
 
     RAW = "raw"

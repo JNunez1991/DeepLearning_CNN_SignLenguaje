@@ -38,16 +38,19 @@ class Main:
         if os.path.exists(Rutas.VAL_PATH):
             shutil.rmtree( os.path.abspath(Rutas.VAL_PATH) )
 
+        if os.path.exists(Rutas.TEST_PATH):
+            shutil.rmtree( os.path.abspath(Rutas.TEST_PATH) )
+
     def visualize_train_images(self) -> None:
         """Se encarga de ejecutar el paso a paso del proyecto"""
 
         viz = Visualization(Rutas.TRAIN_PATH, self.folders)
         viz.run_all()
 
-    def preprocess_images(self, train_size:int) -> None:
+    def preprocess_images(self, train_size:float, val_size:float) -> None:
         """Genera copias de las imagenes y las manda a train/test"""
 
-        preproc = PreProcess(Rutas, train_size) # type:ignore
+        preproc = PreProcess(Rutas, train_size, val_size) # type:ignore
         preproc.run_all(self.folders)
 
     def execute_model(
@@ -67,7 +70,6 @@ class Main:
             ImageParameters.EPOCS,
             ImageParameters.BATCH,
             use_tl,
-
         )
         model.run_all()
         return model
@@ -93,31 +95,33 @@ class Main:
 if __name__ == "__main__":
 
     main = Main()
-    names = ModelNames()
+    # names = ModelNames()
 
     # Divido las imagenes originales en carpetas de Train/Test
-    main.preprocess_images(train_size=180)
+    main.preprocess_images(train_size=0.8, val_size=0.15)
 
-    # Visualizo las imagenes en Train
-    main.visualize_train_images()
+    # # Visualizo las imagenes en Train
+    # main.visualize_train_images()
 
     # Primer modelo: Imagenes puras
-    raw_model = main.execute_model(version=names.RAW)
+    raw_model = main.execute_model(version=ModelNames.RAW)
 
-    # Segundo modelo: Transfer Learning
-    tl_model = main.execute_model(version=names.TRANSFER_LEARNING, use_tl=True)
+    # # Segundo modelo: Transfer Learning
+    # tl_model = main.execute_model(version=ModelNames.TRANSFER_LEARNING, use_tl=True)
 
-    # Aplico data augmentation sobre las imagenes
-    main.apply_data_augmentation()
+    # # Aplico data augmentation sobre las imagenes
+    # main.apply_data_augmentation()
 
-    # Tercer modelo: Data augmentation
-    augm_model = main.execute_model(version=names.DATA_AUGMENTATION)
+    # # Tercer modelo: Data augmentation
+    # augm_model = main.execute_model(version=ModelNames.DATA_AUGMENTATION)
 
-    # Cuarto modelo: Data augmentation + Transfer Learning
-    tlaugm_model = main.execute_model(version=names.TRANSFER_AND_AUGMENTATION, use_tl=True)
+    # # Cuarto modelo: Data augmentation + Transfer Learning
+    # tlaugm_model = main.execute_model(version=ModelNames.TRANSFER_AND_AUGMENTATION, use_tl=True)
 
     # # Evaluo los modelos
-    # main.evaluate_model(names.RAW)
-    # main.evaluate_model(names.TRANSFER_LEARNING)
-    # main.evaluate_model(names.DATA_AUGMENTATION)
-    # main.evaluate_model(names.TRANSFER_AND_AUGMENTATION)
+    # main.evaluate_model(ModelNames.RAW)
+    # main.evaluate_model(ModelNames.TRANSFER_LEARNING)
+    # # main.evaluate_model(ModelNames.DATA_AUGMENTATION)
+    # # main.evaluate_model(ModelNames.TRANSFER_AND_AUGMENTATION)
+
+    # Predigo sobre las imagenes de Test

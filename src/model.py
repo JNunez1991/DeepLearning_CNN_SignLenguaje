@@ -11,8 +11,7 @@ import keras
 import numpy as np
 import tensorflow as tf
 from keras.applications.vgg19 import VGG19
-from keras.callbacks import TensorBoard
-from keras.callbacks import ModelCheckpoint
+from keras.callbacks import TensorBoard, ModelCheckpoint, EarlyStopping
 from keras.layers import Input, Dense, Conv2D, Flatten, MaxPooling2D, Dropout#, Activation
 from keras.models import Sequential, load_model
 from keras.optimizers import Adam #, Nadam
@@ -39,6 +38,7 @@ class Model:
     epochs:int
     batch_size:int
     use_tl:bool = False     # Transfer Learning
+    patience: int = 5       # para early stopping
     mode:str = "max"
     metric:str = 'accuracy'
     label:str = "categorical"
@@ -59,7 +59,7 @@ class Model:
 
         data_train = self.get_data(self.rutas.TRAIN_PATH)
         data_val = self.get_data(self.rutas.VAL_PATH)
-        tensorboard, model_checkpoint = self.set_structures()
+        tensorboard, model_checkpoint, early_stopping = self.set_structures()
 
         nitems_train = len( list(Path(self.rutas.TRAIN_PATH).glob('*/*')) )
         nitems_val = len( list(Path(self.rutas.VAL_PATH).glob('*/*')) )
@@ -73,6 +73,7 @@ class Model:
             cant_val=nitems_val,
             tensorboard=tensorboard,
             checkpoint=model_checkpoint,
+            early_stop=early_stopping,
         )
         return model
 
@@ -87,7 +88,7 @@ class Model:
         )
         return data # type:ignore
 
-    def set_structures(self) -> tuple[TensorBoard, ModelCheckpoint]:
+    def set_structures(self) -> tuple[TensorBoard, ModelCheckpoint, EarlyStopping]:
         """Setea las estructuras necesarias"""
 
         tensorbrd = TensorBoard(log_dir=f'logs/model_{self.version}')
@@ -97,7 +98,14 @@ class Model:
             monitor=self.monitor,
             save_best_only=True,
         )
-        return tensorbrd, checkpoint
+
+        early_stop = EarlyStopping(
+            monitor=self.monitor,
+            patience=self.patience,
+            mode=self.mode,
+            restore_best_weights=True
+        )
+        return tensorbrd, checkpoint, early_stop
 
     def set_model(self, dropout:float = 0.25) -> Sequential:
         """Capas del modelo"""
@@ -156,6 +164,7 @@ class Model:
         cant_val:int,
         tensorboard:TensorBoard,
         checkpoint:ModelCheckpoint,
+        early_stop:EarlyStopping,
     ) -> Sequential:
         """Ajusta el modelo"""
 
@@ -166,20 +175,9 @@ class Model:
             batch_size=self.batch_size,
             steps_per_epoch=int( np.ceil(cant_train / float(self.batch_size)) ),
             validation_steps=int( np.ceil(cant_val / float(self.batch_size)) ),
-            callbacks=[tensorboard, checkpoint]
+            callbacks=[tensorboard, checkpoint, early_stop]
         )
         return model
-
-    # def evaluate_model(self):
-    #     """Evalua el modelo con la mejor performance"""
-
-    #     print("")
-    #     print(f"-. Cargando mejor modelo {self.version.upper}...")
-    #     data_val = self.get_data(self.rutas.VAL_PATH)
-    #     best_model = load_model(self.full_model_name)
-    #     scores = best_model.evaluate(data_val, verbose=1) # type:ignore
-    #     print('   -. Val loss:', scores[0])
-    #     print('   -. Val accuracy:', scores[1])
 
 
 @dataclass

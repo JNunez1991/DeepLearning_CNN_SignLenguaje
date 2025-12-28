@@ -34,9 +34,9 @@ class Visualization:
         """Ajusta el texto en consola"""
 
         if self.augmented:
-            hdr = "- Imagenes con data augmentation..."
+            hdr = "- Imagenes de entrenamiento con data augmentation..."
         else:
-            hdr = "-. Imagenes Reales..."
+            hdr = "-. Imagenes Reales para entrenamiento..."
 
         return "\n" + hdr
 
