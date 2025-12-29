@@ -5,20 +5,14 @@ import os
 import shutil
 from dataclasses import dataclass, field
 from glob import glob
-from typing import Protocol
 
 from tqdm import tqdm
 from sklearn.model_selection import train_test_split
 
+from .blueprint import RutasProtocol
+
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' # ignora los msjs de tensorflow
 
-class RutasProtocol(Protocol):
-    """Protocolo de rutas"""
-
-    IMGS_PATH: str
-    TRAIN_PATH: str
-    VAL_PATH: str
-    TEST_PATH: str
 
 class InvalidProportions(ValueError):
     """Las proporciones deben ser menor a uno"""
@@ -40,11 +34,11 @@ class PreProcess:
 
         print("")
         print("-. Pre procesando datos...")
+        self.check_sizes()
         self.raw_images_path = os.path.abspath(self.rutas.IMGS_PATH)
         self.train_path = os.path.abspath(self.rutas.TRAIN_PATH)
         self.validation_path = os.path.abspath(self.rutas.VAL_PATH)
         self.test_path = os.path.abspath(self.rutas.TEST_PATH)
-        self.check_sizes()
 
     def check_sizes(self) -> None:
         """Corta la ejecucion si (train_size + val_size) > 1 """

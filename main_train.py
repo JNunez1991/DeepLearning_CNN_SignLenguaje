@@ -7,7 +7,7 @@ from dataclasses import dataclass, field
 
 from keras.models import Sequential
 
-from config import Rutas, ImageParameters, ModelNames
+from config import Rutas, ImageParameters
 from src.entrenamiento import (
     DataAugmentation,
     EvalModel,

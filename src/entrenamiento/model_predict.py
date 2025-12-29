@@ -6,19 +6,13 @@ import os
 import random
 from dataclasses import dataclass, field
 from glob import glob
-from typing import Protocol
 
 import numpy as np
 from keras.preprocessing import image
 from keras.models import load_model, Model
 from matplotlib import pyplot as plt, image as mpimg
 
-
-class RutasProtocol(Protocol):
-    """Protocolo de rutas"""
-
-    TEST_PATH: str
-    MODEL_PATH: str
+from .blueprint import RutasProtocol, Colores
 
 
 @dataclass
@@ -27,7 +21,7 @@ class ModelPredict:
 
     rutas: RutasProtocol
     modelname:str
-    img_size:tuple[int, int, int]
+    img_size:tuple[int, ...]
     plot:bool = False
 
     full_model_name:str = field(init=False)
@@ -65,10 +59,15 @@ class ModelPredict:
         for img in filenames:
 
             # Cargo la imagen con keras
-            imagen = image.load_img(img, target_size=self.img_size)
+            imagen = image.load_img(
+                img,
+                target_size=self.img_size,
+                color_mode=Colores.GRAYSCALE,
+            )
 
-            # Imagen a array + dimension extra para batch
+            # Imagen a array + rescale + dimension extra para batch
             img_array = image.img_to_array(imagen)
+            img_array = img_array / 255.0
             img_array = np.expand_dims(img_array, axis=0)
 
             # Realizo la prediccion y la guardo

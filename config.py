@@ -20,7 +20,7 @@ class Rutas(StrEnum):
 class ImageParameters:
     """Parametros de las imagenes"""
 
-    DIMS: tuple[int, int, int] = (100, 100, 3)
+    DIMS: tuple[int, ...] = (100, 100, 1) # imgs a color que se las pasa a blanco y negro
     EPOCS: int = 40
     BATCH: int = 32
 
