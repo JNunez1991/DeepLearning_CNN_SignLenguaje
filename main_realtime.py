@@ -3,20 +3,26 @@
 """Utilizo el modelo con mejores resulados, para predecir en tiempo real (con webcam)"""
 
 import os
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import numpy as np
-# import tensorflow as tf
 import cv2
 from keras.models import load_model, Model
 
 from config import Rutas, ModelNames, ImageParameters
+from src.realtime import (
+    TextInFrame
+)
+
+
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 @dataclass
 class RealTime:
     """Carga el mejor modelo, y lo utiliza para predecir en real time"""
 
     modelname: str
+    texto: TextInFrame = field(default_factory=TextInFrame)
 
     def __post_init__(self):
         """Se ejecuta luego de instanciar la clase"""
@@ -40,8 +46,6 @@ class RealTime:
         if not cap.isOpened():
             raise RuntimeError("No se pudo acceder a la cámara")
 
-        print("Presiona 'q' para salir.")
-
         # Capturar frame por frame
         while True:
             ret, frame = cap.read()
@@ -49,8 +53,9 @@ class RealTime:
                 break
 
             input_tensor = self.preprocess_frame(frame)
-            prediction = self.predict(input_tensor)
-            self.draw_prediction(frame, prediction)
+            prediction, porcentaje = self.predict(model, input_tensor)
+            self.texto.header(frame)
+            self.texto.info(frame, prediction, porcentaje)
 
             cv2.imshow("Sign Language - Real Time", frame)
 
@@ -60,32 +65,33 @@ class RealTime:
         cap.release()
         cv2.destroyAllWindows()
 
-    def preprocess_frame(self, frame):
+    def preprocess_frame(self, frame) -> np.ndarray:
         """
         Opencv (cv2) captura las imagenes en formato BGR.
         Entonces transformo cada frame a tensor (1, H, W, 1)
         """
+
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         resized = cv2.resize(gray, ImageParameters.DIMS[:2])
         normalized = resized / 255.0
-        return normalized.reshape(1, ImageParameters.DIMS)
+        return normalized.reshape(1, *ImageParameters.DIMS)
 
-    def predict(self, model:Model, input_tensor:tuple[float, ...]):
+    def predict(
+        self,
+        model:Model,
+        input_tensor: np.ndarray,
+    ) -> tuple[int, float]:
         """Predice la clase de la imagen"""
-        preds = model.predict(input_tensor, verbose=0)
-        return int(np.argmax(preds))
 
-    def draw_prediction(self, frame, prediction):
-        cv2.putText(
-            frame,
-            f"Prediccion: {prediction}",
-            (20, 40),
-            cv2.FONT_HERSHEY_SIMPLEX,
-            1,
-            (0, 255, 0),
-            2
-        )
+        preds = model.predict(input_tensor, verbose=0) # type:ignore
+        clase = int(np.argmax(preds))
+        confianza = float(np.max(preds))
+        return clase, confianza
+
+
+
 
 if __name__ == "__main__":
 
-    realtime = RealTime(ModelNames.DATA_AUGMENTATION)
+    realtime = RealTime(ModelNames.RAW)
+    realtime.run_all()
