@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Orquestador principal del proyecto"""
+"""Orquestador principal de la pata de entrenamiento de modelos"""
 
 import os
 import shutil
@@ -8,7 +8,7 @@ from dataclasses import dataclass, field
 from keras.models import Sequential
 
 from config import Rutas, ImageParameters, ModelNames
-from src import (
+from src.entrenamiento import (
     DataAugmentation,
     EvalModel,
     Model,
