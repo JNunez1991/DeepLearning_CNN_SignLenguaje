@@ -59,8 +59,9 @@ class DataAugmentation:
     def set_augmentation_parameters(self) -> keras.Sequential:
         """Aplico data augmentation sobre las imagenes"""
         return keras.Sequential([
+
             # GEOMÉTRICAS (imagen en [0,255])
-            keras.layers.RandomRotation(0.08),          # ~15°
+            keras.layers.RandomRotation(0.08),
             keras.layers.RandomTranslation(0.1, 0.1),
             keras.layers.RandomZoom(0.1),
             keras.layers.RandomFlip("horizontal"),
