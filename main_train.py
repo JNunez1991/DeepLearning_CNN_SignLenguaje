@@ -31,11 +31,11 @@ class Main:
         self.folders = os.listdir(Rutas.IMGS_PATH)
         self.nfolders = len(self.folders)
 
-    def preprocess_images(self, train_size:float, val_size:float) -> None:
+    def preprocess_images(self, train_size:float, val_size:float, ncopies:int=8) -> None:
         """Genera copias de las imagenes y las manda a train/test"""
 
         self.preprocess_images_delete_folders()
-        preproc = PreProcess(Rutas, train_size, val_size) # type:ignore
+        preproc = PreProcess(Rutas, train_size, val_size, ncopies) # type:ignore
         preproc.run_all(self.folders)
 
     def preprocess_images_delete_folders(self) -> None:

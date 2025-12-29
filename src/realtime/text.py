@@ -6,6 +6,7 @@ import os
 from dataclasses import dataclass
 
 import cv2
+import numpy as np
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
@@ -15,7 +16,7 @@ class TextInFrame:
 
     def header(
         self,
-        frame,
+        frame:np.ndarray,
         text:str = "Presiona 'q' para salir.",
         pos:tuple[int, int]=(20, 40),
         font:int=cv2.FONT_HERSHEY_SIMPLEX,
@@ -56,16 +57,16 @@ class TextInFrame:
 
     def info(
         self,
-        frame,
+        frame:np.ndarray,
         prediction:int,
         porc:float,
         pos:tuple[int, int]=(20, 70),
         font:int=cv2.FONT_HERSHEY_SIMPLEX,
         font_scale:float=0.5, # tamaño de letra
-        font_color:tuple[int,...]=(0,0,0), # color negro
+        font_color:tuple[int,...]=(0,0,0), # letras negras
         font_thickness:int=1, # 1: sin negrita, 2: negrita
         bg_padding:int=6,
-        bg_color:tuple[int,...]=(255,255,255), #color blanco
+        bg_color:tuple[int,...]=(255,255,255), #background blanco
     ) -> None:
         """Rectangulo negro con letras blancas para header"""
         x, y = pos
@@ -96,31 +97,3 @@ class TextInFrame:
             font_thickness,
             cv2.LINE_AA, # suaviza los bordes
         )
-
-
-
-
-    # def prediction(
-    #     self,
-    #     frame,
-    #     prediction:int,
-    #     porc:float,
-    #     pos:tuple[int, int]=(20, 70),
-    #     font:int=cv2.FONT_HERSHEY_SIMPLEX,
-    #     font_scale:float=0.5, # tamaño de letra
-    #     font_color:tuple=(0,255,0), # color de letra
-    #     font_thickness:int=1, # 1: sin negrita, 2: negrita
-    # ) -> None:
-    #     """Escribe la prediccion"""
-
-    #     msg = f"Prediccion: {prediction}, Probabilidad: {porc:.2f}%"
-    #     cv2.putText(
-    #         frame,
-    #         f"{msg}",
-    #         pos,
-    #         font,
-    #         font_scale,
-    #         font_color,
-    #         font_thickness,
-    #         cv2.LINE_AA, # suaviza los bordes
-    #     )

@@ -37,7 +37,7 @@ class RealTime:
         model = load_model(self.full_model_name)
         self.start_camera(model) # type:ignore
 
-    def start_camera(self, model:Model) -> None:
+    def start_camera(self, model:Model, roi_size:int=300) -> None:
         """Inicializa la webcam para la prediccion en tiempo real"""
 
         cap = cv2.VideoCapture(0) #type:ignore
@@ -52,8 +52,14 @@ class RealTime:
             if not ret:
                 break
 
-            input_tensor = self.preprocess_frame(frame)
+            roi, (x1, y1, x2, y2) = self.get_roi(frame, roi_size)
+
+            input_tensor = self.preprocess_frame(roi)
             prediction, porcentaje = self.predict(model, input_tensor)
+
+            # Dibujar ROI
+            cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
+
             self.texto.header(frame)
             self.texto.info(frame, prediction, porcentaje)
 
@@ -65,7 +71,28 @@ class RealTime:
         cap.release()
         cv2.destroyAllWindows()
 
-    def preprocess_frame(self, frame) -> np.ndarray:
+    def get_roi(
+        self,
+        frame: np.ndarray,
+        size: int,
+    ) -> tuple[np.ndarray, tuple[int, ...]]:
+        """
+        Devuelve:
+        - roi: region of interest -- imagen recortada NxN
+        - (x1, y1, x2, y2): coordenadas del cuadro
+        """
+        h, w, _ = frame.shape
+
+        size = min(size, h, w)
+        x1 = (w - size) // 2
+        y1 = (h - size) // 2
+        x2 = x1 + size
+        y2 = y1 + size
+
+        roi = frame[y1:y2, x1:x2]
+        return roi, (x1, y1, x2, y2)
+
+    def preprocess_frame(self, frame:np.ndarray) -> np.ndarray:
         """
         Opencv (cv2) captura las imagenes en formato BGR.
         Entonces transformo cada frame a tensor (1, H, W, 1)
@@ -93,5 +120,5 @@ class RealTime:
 
 if __name__ == "__main__":
 
-    realtime = RealTime(ModelNames.RAW)
+    realtime = RealTime(ModelNames.DATA_AUGMENTATION)
     realtime.run_all()

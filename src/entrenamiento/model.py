@@ -176,7 +176,7 @@ class EvalModel:
 
     rutas: RutasProtocol
     modelname:str
-    img_size:tuple[int, int, int]
+    img_size:tuple[int, ...]
     batch_size:int
     label:str = "categorical"
 
