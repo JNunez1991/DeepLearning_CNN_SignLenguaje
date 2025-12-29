@@ -4,7 +4,6 @@
 
 import os
 from dataclasses import dataclass, field
-from typing import Protocol
 from pathlib import Path
 
 import keras
@@ -16,14 +15,7 @@ from keras.layers import Input, Dense, Conv2D, Flatten, MaxPooling2D, Dropout#, 
 from keras.models import Sequential, load_model
 from keras.optimizers import Adam #, Nadam
 
-
-class RutasProtocol(Protocol):
-    """Protocolo de rutas"""
-
-    IMGS_PATH: str
-    TRAIN_PATH: str
-    VAL_PATH: str
-    MODEL_PATH: str
+from .blueprint import RutasProtocol, Colores
 
 
 @dataclass
@@ -34,7 +26,7 @@ class Model:
     nfolders:int
     modelname:str
     version:str
-    img_size:tuple[int, int, int]
+    img_size:tuple[int, ...]
     epochs:int
     batch_size:int
     use_tl:bool = False     # Transfer Learning
@@ -85,6 +77,7 @@ class Model:
             image_size=self.img_size[:2],
             batch_size=self.batch_size,
             label_mode=self.label,
+            color_mode=Colores.GRAYSCALE,
         )
         return data # type:ignore
 
@@ -209,5 +202,6 @@ class EvalModel:
             image_size=self.img_size[:2],
             batch_size=self.batch_size,
             label_mode=self.label,
+            color_mode=Colores.GRAYSCALE,
         )
         return data # type:ignore
