@@ -103,39 +103,3 @@ class Main:
             plot,
         )
         return pred.run_all() # type:ignore
-
-
-if __name__ == "__main__":
-
-    main = Main()
-    # names = ModelNames()
-
-    # # Divido las imagenes originales en carpetas de Train/Test
-    # main.preprocess_images(train_size=0.8, val_size=0.15)
-
-    # # Visualizo las imagenes en Train
-    # main.visualize_train_images()
-
-    # Primer modelo: Imagenes puras
-    raw_model = main.execute_model(version=ModelNames.RAW)
-
-    # # Segundo modelo: Transfer Learning
-    # tl_model = main.execute_model(version=ModelNames.TRANSFER_LEARNING, use_tl=True)
-
-    # # Aplico data augmentation sobre las imagenes
-    # main.apply_data_augmentation()
-
-    # # Tercer modelo: Data augmentation
-    # augm_model = main.execute_model(version=ModelNames.DATA_AUGMENTATION)
-
-    # # Cuarto modelo: Data augmentation + Transfer Learning
-    # tlaugm_model = main.execute_model(version=ModelNames.TRANSFER_AND_AUGMENTATION, use_tl=True)
-
-    # # Evaluo los modelos
-    # main.evaluate_model(ModelNames.RAW)
-    # main.evaluate_model(ModelNames.TRANSFER_LEARNING)
-    # # main.evaluate_model(ModelNames.DATA_AUGMENTATION)
-    # # main.evaluate_model(ModelNames.TRANSFER_AND_AUGMENTATION)
-
-    # # Predigo sobre las imagenes de Test
-    # main.predict_model(ModelNames.DATA_AUGMENTATION)
