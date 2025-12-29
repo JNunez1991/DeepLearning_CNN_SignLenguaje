@@ -93,13 +93,14 @@ class Main:
         )
         score.run_all(modelname)
 
-    def predict_model(self, modelname:str) -> dict[str, str]:
+    def predict(self, modelname:str, plot:bool=False) -> dict[str, str]:
         """A cada imagen de Test, le predice una clase"""
 
         pred = ModelPredict(
             Rutas, # type:ignore
             modelname,
             ImageParameters.DIMS,
+            plot,
         )
         return pred.run_all() # type:ignore
 

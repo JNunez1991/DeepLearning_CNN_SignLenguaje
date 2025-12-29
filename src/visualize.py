@@ -48,7 +48,6 @@ class Visualization:
             items = len(os.listdir(path_folder))
             msg = f"Carpeta '{fold}': {items} elementos"
             print(msg)
-        return
 
     def show_images_same_folder(self, nimages:int = 5) -> None:
         """Selecciona aleatoriamente una carpeta y muestra algunas imagenes"""
@@ -66,7 +65,6 @@ class Visualization:
             plt.title(title)
             imagen = mpimg.imread(os.path.join(path, nombreimg)) # mpimg.imread lee los pixeles
             plt.imshow(imagen)
-        return
 
     def show_images_different_folder(self, nimages:int = 5) -> None:
         """Selecciona aleatoriamente una carpeta y muestra algunas imagenes"""

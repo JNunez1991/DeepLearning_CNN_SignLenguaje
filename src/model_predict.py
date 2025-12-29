@@ -3,6 +3,7 @@
 """Modelo con el que se va a entrenar"""
 
 import os
+import random
 from dataclasses import dataclass, field
 from glob import glob
 from typing import Protocol
@@ -10,6 +11,7 @@ from typing import Protocol
 import numpy as np
 from keras.preprocessing import image
 from keras.models import load_model, Model
+from matplotlib import pyplot as plt, image as mpimg
 
 
 class RutasProtocol(Protocol):
@@ -26,6 +28,7 @@ class ModelPredict:
     rutas: RutasProtocol
     modelname:str
     img_size:tuple[int, int, int]
+    plot:bool = False
 
     full_model_name:str = field(init=False)
 
@@ -42,6 +45,8 @@ class ModelPredict:
         file_names = self.get_files_names()
         model = load_model(self.full_model_name)
         resultados = self.create_predictions(file_names, model) # type:ignore
+        if self.plot:
+            self.show_predictions(file_names, resultados)
         return resultados # type:ignore
 
     def get_files_names(self) -> list[str]:
@@ -71,3 +76,25 @@ class ModelPredict:
             resultados[os.path.basename(img)] = np.argmax(prediction, axis=1)[0]
 
         return resultados
+
+    def show_predictions(
+        self,
+        filenames:list[str],
+        preds:dict[str, str],
+        nimages:int = 5,
+    ) -> None:
+        """Selecciona aleatoriamente una carpeta y muestra algunas imagenes"""
+
+        plt.figure(figsize=(15,15))
+        plt.suptitle("Imagenes de Test", y=0.6)
+
+        imgs_to_show = random.sample(filenames, nimages)
+
+        # for idx, nombreimg in enumerate(imgs_to_show):
+        for idx, img in enumerate(imgs_to_show):
+            plt.subplot(1, nimages, idx+1)
+            image_name = os.path.basename(img)
+            pred = preds[image_name]
+            plt.title(f"Prediccion: {pred}")
+            imagen = mpimg.imread(os.path.abspath(img)) # mpimg.imread lee los pixeles
+            plt.imshow(imagen)
