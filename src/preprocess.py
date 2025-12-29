@@ -89,11 +89,6 @@ class PreProcess:
             train_imgs, temp = train_test_split( files, train_size=self.train_size )
             val_imgs, test_imgs = train_test_split( temp, train_size= 1-self.val_size )
 
-            # train_imgs = random.sample(files, self.train_size)
-            # aux = list( set(files) - set(train_imgs) )
-            # val_imgs = random.sample(aux, self.val_size)
-            # test_imgs = list( set(aux) - set(val_imgs) )
-
             self.move_copies(train_imgs, self.train_path, str(fold))
             self.move_copies(val_imgs, self.validation_path, str(fold))
             self.move_copies(test_imgs, self.test_path)

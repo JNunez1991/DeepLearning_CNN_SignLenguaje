@@ -34,7 +34,7 @@ class Model:
     nfolders:int
     modelname:str
     version:str
-    img_size:tuple[int, int]
+    img_size:tuple[int, int, int]
     epochs:int
     batch_size:int
     use_tl:bool = False     # Transfer Learning
@@ -59,7 +59,7 @@ class Model:
 
         data_train = self.get_data(self.rutas.TRAIN_PATH)
         data_val = self.get_data(self.rutas.VAL_PATH)
-        tensorboard, model_checkpoint, early_stopping = self.set_structures()
+        tensorboard, model_checkpoint, early_stopping = self.set_callbacks()
 
         nitems_train = len( list(Path(self.rutas.TRAIN_PATH).glob('*/*')) )
         nitems_val = len( list(Path(self.rutas.VAL_PATH).glob('*/*')) )
@@ -82,13 +82,13 @@ class Model:
 
         data = keras.utils.image_dataset_from_directory(
             path,
-            image_size=self.img_size,
+            image_size=self.img_size[:2],
             batch_size=self.batch_size,
             label_mode=self.label,
         )
         return data # type:ignore
 
-    def set_structures(self) -> tuple[TensorBoard, ModelCheckpoint, EarlyStopping]:
+    def set_callbacks(self) -> tuple[TensorBoard, ModelCheckpoint, EarlyStopping]:
         """Setea las estructuras necesarias"""
 
         tensorbrd = TensorBoard(log_dir=f'logs/model_{self.version}')
@@ -110,13 +110,10 @@ class Model:
     def set_model(self, dropout:float = 0.25) -> Sequential:
         """Capas del modelo"""
 
-        # al tamaño de las imagenes, le agrego los canales de color
-        input_size_with_channels = (*self.img_size, 3)
-
         if self.use_tl:
             tl_base = VGG19(
                  weights='imagenet',
-                 input_shape = input_size_with_channels,
+                 input_shape = self.img_size,
                  include_top = False,
             )
             tl_base.trainable = False
@@ -130,7 +127,7 @@ class Model:
         else:
             model = Sequential(
                 [
-                    Input(shape=input_size_with_channels),
+                    Input(shape=self.img_size),
 
                     Conv2D(32, kernel_size = (3, 3), padding = 'same', activation='relu'),
                     MaxPooling2D(pool_size = (2, 2)),
@@ -186,7 +183,7 @@ class EvalModel:
 
     rutas: RutasProtocol
     modelname:str
-    img_size:tuple[int, int]
+    img_size:tuple[int, int, int]
     batch_size:int
     label:str = "categorical"
 
@@ -209,7 +206,7 @@ class EvalModel:
 
         data = keras.utils.image_dataset_from_directory(
             path,
-            image_size=self.img_size,
+            image_size=self.img_size[:2],
             batch_size=self.batch_size,
             label_mode=self.label,
         )

@@ -14,7 +14,7 @@ class DataAugmentation:
     """Clase que se encarga de analizar y pre-procesar las imagenes"""
 
     train_path:str
-    image_size:tuple[int, int]
+    img_size:tuple[int, int, int]
     ncopies: int = 5
 
     def __post_init__(self):
@@ -47,7 +47,7 @@ class DataAugmentation:
 
         data = keras.utils.image_dataset_from_directory(
             self.train_path,
-            image_size=(100,100),
+            image_size=self.img_size[:2],
             batch_size=1,
             shuffle=False
         )

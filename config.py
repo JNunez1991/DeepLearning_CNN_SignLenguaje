@@ -20,7 +20,7 @@ class Rutas(StrEnum):
 class ImageParameters:
     """Parametros de las imagenes"""
 
-    DIMS: tuple[int, int] = (100, 100)
+    DIMS: tuple[int, int, int] = (100, 100, 3)
     EPOCS: int = 40
     BATCH: int = 32
 

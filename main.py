@@ -5,13 +5,16 @@ import os
 import shutil
 from dataclasses import dataclass, field
 
+from keras.models import Sequential
+
 from config import Rutas, ImageParameters, ModelNames
 from src import (
-    PreProcess,
-    Visualization,
-    Model,
     DataAugmentation,
     EvalModel,
+    Model,
+    ModelPredict,
+    PreProcess,
+    Visualization,
 )
 
 
@@ -27,9 +30,15 @@ class Main:
 
         self.folders = os.listdir(Rutas.IMGS_PATH)
         self.nfolders = len(self.folders)
-        self.delete_folders_train_validation()
 
-    def delete_folders_train_validation(self) -> None:
+    def preprocess_images(self, train_size:float, val_size:float) -> None:
+        """Genera copias de las imagenes y las manda a train/test"""
+
+        self.preprocess_images_delete_folders()
+        preproc = PreProcess(Rutas, train_size, val_size) # type:ignore
+        preproc.run_all(self.folders)
+
+    def preprocess_images_delete_folders(self) -> None:
         """Elimina las carpetas de Train & Validation"""
 
         if os.path.exists(Rutas.TRAIN_PATH):
@@ -47,17 +56,11 @@ class Main:
         viz = Visualization(Rutas.TRAIN_PATH, self.folders)
         viz.run_all()
 
-    def preprocess_images(self, train_size:float, val_size:float) -> None:
-        """Genera copias de las imagenes y las manda a train/test"""
-
-        preproc = PreProcess(Rutas, train_size, val_size) # type:ignore
-        preproc.run_all(self.folders)
-
     def execute_model(
         self,
         version:str,
         use_tl:bool=False, # Transfer Learning
-    ):
+    ) -> Sequential:
         """Ejecuta el entrenamiento sobre las imagenes crudas, sin ninguna modificación"""
 
         modelname = f"model_{version}.keras"
@@ -71,8 +74,7 @@ class Main:
             ImageParameters.BATCH,
             use_tl,
         )
-        model.run_all()
-        return model
+        return model.run_all()
 
     def apply_data_augmentation(self) -> None:
         """Aplica Data Augmentation a las imagenes de Train"""
@@ -91,14 +93,24 @@ class Main:
         )
         score.run_all(modelname)
 
+    def predict_model(self, modelname:str) -> dict[str, str]:
+        """A cada imagen de Test, le predice una clase"""
+
+        pred = ModelPredict(
+            Rutas, # type:ignore
+            modelname,
+            ImageParameters.DIMS,
+        )
+        return pred.run_all() # type:ignore
+
 
 if __name__ == "__main__":
 
     main = Main()
     # names = ModelNames()
 
-    # Divido las imagenes originales en carpetas de Train/Test
-    main.preprocess_images(train_size=0.8, val_size=0.15)
+    # # Divido las imagenes originales en carpetas de Train/Test
+    # main.preprocess_images(train_size=0.8, val_size=0.15)
 
     # # Visualizo las imagenes en Train
     # main.visualize_train_images()
@@ -124,4 +136,5 @@ if __name__ == "__main__":
     # # main.evaluate_model(ModelNames.DATA_AUGMENTATION)
     # # main.evaluate_model(ModelNames.TRANSFER_AND_AUGMENTATION)
 
-    # Predigo sobre las imagenes de Test
+    # # Predigo sobre las imagenes de Test
+    # main.predict_model(ModelNames.DATA_AUGMENTATION)

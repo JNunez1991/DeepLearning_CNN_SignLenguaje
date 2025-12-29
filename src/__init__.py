@@ -3,5 +3,6 @@
 
 from .augmentation import DataAugmentation
 from .model import Model, EvalModel
+from .model_predict import ModelPredict
 from .preprocess import PreProcess
 from .visualize import Visualization
