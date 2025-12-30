@@ -24,7 +24,7 @@ class PreProcess:
     rutas: RutasProtocol
     train_size:float
     val_size:float
-    ncopies: int = 5
+    ncopies: int
     train_path:str = field(init=False)
     validation_path:str = field(init=False)
     raw_images_path:str = field(init=False)

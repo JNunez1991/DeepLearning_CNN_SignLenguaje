@@ -17,7 +17,7 @@ class DataAugmentation:
 
     train_path:str
     img_size:tuple[int, ...]
-    ncopies: int = 5
+    ncopies: int = 8
 
     def __post_init__(self):
         """Se ejecuta luego de instanciar la clase"""
@@ -57,15 +57,22 @@ class DataAugmentation:
         return data # type:ignore
 
     def set_augmentation_parameters(self) -> keras.Sequential:
-        """Parametros del aumento de datos"""
+        """Aplico data augmentation sobre las imagenes"""
+        return keras.Sequential([
 
-        params = keras.Sequential([
+            # GEOMÉTRICAS (imagen en [0,255])
+            keras.layers.RandomRotation(0.08),
+            keras.layers.RandomTranslation(0.1, 0.1),
+            keras.layers.RandomZoom(0.1),
+            keras.layers.RandomFlip("horizontal"),
+
+            # COLOR / ILUMINACIÓN
+            keras.layers.RandomContrast(0.1),
+            keras.layers.RandomBrightness(0.1),
+
+            # NORMALIZACIÓN
             keras.layers.Rescaling(1./255),
-            keras.layers.RandomRotation(30 / 360),
-            keras.layers.RandomTranslation(0.25, 0.25),
-            keras.layers.RandomZoom(
-                height_factor=(-0.2, 0.2),
-                width_factor=(-0.2, 0.2)
-            ),
+
+            # RUIDO (muy leve)
+            keras.layers.GaussianNoise(0.02),
         ])
-        return params
