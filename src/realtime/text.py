@@ -1,14 +1,11 @@
 #!/usr/bin/env python3
 # pylint: disable=no-name-in-module, no-member
-"""Utilizo el modelo con mejores resulados, para predecir en tiempo real (con webcam)"""
+"""Textos en pantalla"""
 
-import os
 from dataclasses import dataclass
 
 import cv2
 import numpy as np
-
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 @dataclass
 class TextInFrame:
