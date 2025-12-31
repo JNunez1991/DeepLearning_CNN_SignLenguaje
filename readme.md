@@ -1,5 +1,5 @@
 <div>
-  <img src="/imgs/header.png" width="120" align="right">
+  <img src="/imgs/header.jpg" width="120" align="right">
 
   <h1 align="center">Sign Lenguaje</h1>
   <p align="center">Entrenamiento y predicción en tiempo real de lenguaje de señas</p>
