@@ -52,12 +52,12 @@ Proyecto que busca entrenar una red neuronal convolucional (CNN) que permita pre
 
 ## 📋 Funcionamiento
 * **Entrenamiento**
-Acceder al archivo .ipynb dentro de la carpeta Notebook.
-Alli se encuentra, paso a paso, la totalidad de la logica necesaria para entrenar hasta 4 modelos distintos.
-Luego de entrenado, cada modelo se guarda en la carpeta 'models', y sus correspondientes logs en la carpeta 'logs'.
+Acceder al archivo `SignLenguaje.ipynb` dentro de la carpeta `Notebook`.
+Alli se ejecuta, paso a paso, la logica necesaria para entrenar hasta 4 modelos diferentes.
+Luego de entrenado, cada modelo se guarda en la carpeta `models`, y sus correspondientes logs en la carpeta `logs`.
 
 * **Prediccion tiempo real**
-Ejecutar 'main_realtime.py'.
+Ejecutar `main_realtime.py`.
 Se abrirá consola que le preguntará al usuario que modelo quiere utilizar.
 Luego de seleccionado el modelo, se inicializa la camara y comienza la prediccion en tiempo real.
 
