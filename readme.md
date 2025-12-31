@@ -1,8 +1,7 @@
-<div>
-  <img src="/imgs/header.jpg" width="120" align="right">
-
-  <h1 align="center">Sign Lenguaje</h1>
-  <p align="center">Entrenamiento y predicción en tiempo real de lenguaje de señas</p>
+<div style="display: flex; flex-direction: column; align-items: center; text-align: center;">
+  <h1>Sign Lenguaje</h1>
+  <h7>Entrenamiento y predicción en tiempo real de lenguaje de señas</h7>
+  <img src="/imgs/header.jpg" width="120">
 </div>
 
 
