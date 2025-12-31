@@ -1,9 +1,18 @@
-<div style="display: flex; flex-direction: column; align-items: center; text-align: center;">
-  <h1>Sign Lenguaje</h1>
-  <h7>Entrenamiento y predicción en tiempo real de lenguaje de señas</h7>
-  <img src="/imgs/header.jpg" width="120">
+<div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%; border-bottom: 1px solid #333; padding-bottom: 10px;">
+
+  <div style="display: flex; flex-direction: column;">
+    <h1 style="margin: 0; font-size: 2.5em;">Sign Lenguaje</h1>
+    <h4 style="margin: 5px 0 0 0; font-weight: normal; color: #888;">
+      Entrenamiento y predicción en tiempo real de lenguaje de señas
+    </h4>
+  </div>
+
+  <img src="/imgs/header.jpg" width="100" style="border-radius: 8px;">
+
 </div>
 
+
+</div>
 
 ## 📌 Descripción
 Proyecto que busca entrenar una red neuronal convolucional (CNN) que permita predecir, en tiempo real, los numeros del 0 al 9 en lenguaje de señas, mediante la utilización de la camara incorporada al pc.
