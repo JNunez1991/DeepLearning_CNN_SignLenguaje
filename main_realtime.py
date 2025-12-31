@@ -8,9 +8,7 @@ from dataclasses import dataclass, field
 from keras.models import load_model
 
 from config import Rutas, ModelNames, ImageParameters
-from src.realtime import Camara
-
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+from src.realtime.controller import Camara
 
 @dataclass
 class RealTime:
