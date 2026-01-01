@@ -8,7 +8,7 @@ import keras
 import tensorflow as tf
 from tqdm import tqdm
 
-from .blueprint import Colores
+# from .blueprint import Colores
 
 
 @dataclass
@@ -50,7 +50,7 @@ class DataAugmentation:
         data = keras.utils.image_dataset_from_directory(
             self.train_path,
             image_size=self.img_size[:2],
-            color_mode=Colores.GRAYSCALE,
+            # color_mode=Colores.GRAYSCALE,
             batch_size=1,
             shuffle=False
         )

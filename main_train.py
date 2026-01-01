@@ -11,7 +11,7 @@ from config import Rutas, ImageParameters
 from src.entrenamiento import (
     DataAugmentation,
     EvalModel,
-    Model,
+    RunModel,
     ModelPredict,
     PreProcess,
     Visualization,
@@ -64,7 +64,7 @@ class Main:
         """Ejecuta el entrenamiento sobre las imagenes crudas, sin ninguna modificación"""
 
         modelname = f"model_{version}.keras"
-        model = Model(
+        model = RunModel(
             Rutas, # type:ignore
             self.nfolders,
             modelname,

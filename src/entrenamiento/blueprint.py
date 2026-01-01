@@ -2,7 +2,10 @@
 """Clases comunes al resto de modulos"""
 
 from enum import StrEnum
+from dataclasses import dataclass
 from typing import Protocol
+
+from keras.callbacks import TensorBoard, ModelCheckpoint, EarlyStopping
 
 
 class RutasProtocol(Protocol):
@@ -19,3 +22,11 @@ class Colores(StrEnum):
     """Colores para entrenamiento"""
 
     GRAYSCALE = "grayscale"
+
+@dataclass
+class Callbacks:
+    """Callbacks del modelo"""
+
+    tensorboard: TensorBoard
+    checkpoint: ModelCheckpoint
+    early_stop: EarlyStopping
