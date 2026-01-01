@@ -12,15 +12,17 @@
 </div>
 
 
-</div>
-
 ## 📌 Descripción
 Proyecto que busca entrenar una red neuronal convolucional (CNN) que permita predecir, en tiempo real, los numeros del 0 al 9 en lenguaje de señas, mediante la utilización de la camara incorporada al pc.
 
+## ⚠️ Disclaimer
+El proyecto no busca la excelencia.
+Las imagenes utilizadas para el entrenamiento son de dimensiones (100, 100, 3), y en calidad baja, por lo que no es de esperar que los resultados de las predicciones sean infalibles.
+
 ## 🚀 Funcionalidades Clave
-* **Análisis de Datos:** Analisis de las imagenes que se utilizan para el entrenamiento, y generacion de carpetas (una por categoria).
+* **Procesamiento de imagenes:** Analisis de las imagenes que se utilizan para el entrenamiento, y generacion de carpetas (una por categoria).
 * **Modelado:** Implementación de algoritmos de Deep Learning + Data Augmentation (opcional) + Transfer Learning (Opcional)
-* **Visualización:** Prediccion en tiempo real mediante keras + OpenCV.
+* **Visualización:** Prediccion en tiempo real mediante keras & OpenCV.
 
 ## 🛠️ Stack Tecnológico
 * **Lenguaje:** Python 3.11.7

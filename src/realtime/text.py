@@ -15,7 +15,6 @@ class TextInFrame:
         self,
         frame:np.ndarray,
         modelname:str,
-        # text:str = "Presiona 'q' para salir.",
         pos:tuple[int, int]=(20, 40),
         font:int=cv2.FONT_HERSHEY_SIMPLEX,
         font_scale:float=0.5, # tamaño de letra
