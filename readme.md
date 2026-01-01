@@ -70,9 +70,10 @@ Luego de entrenado, cada modelo se guarda en la carpeta `models`, y sus correspo
 Ejecutar `main_realtime.py`.
 Se abrirá consola que le preguntará al usuario que modelo quiere utilizar.
 Luego de seleccionado el modelo, se inicializa la camara y comienza la prediccion en tiempo real.
+Se adjunta video a Youtube con el funcionamiento de la interfaz.
 
 <div align="center">
-  <a href="https://www.youtube.com/watch?v=Srxq49WOVNk">
-    <img src="https://img.youtube.com/vi/Srxq49WOVNk/0.jpg" width="200">
+  <a href="https://www.youtube.com/watch?v=gF9f2Tq1E1A">
+    <img src="https://img.youtube.com/vi/gF9f2Tq1E1A/0.jpg" width="200">
   </a>
 </div>
