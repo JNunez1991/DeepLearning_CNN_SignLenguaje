@@ -65,6 +65,7 @@ class Visualization:
             plt.title(title)
             imagen = mpimg.imread(os.path.join(path, nombreimg)) # mpimg.imread lee los pixeles
             plt.imshow(imagen)
+            plt.axis("off")
 
     def show_images_different_folder(self, nimages:int = 5) -> None:
         """Selecciona aleatoriamente una carpeta y muestra algunas imagenes"""
@@ -92,3 +93,4 @@ class Visualization:
             path = os.path.join(self.path, nombreimg)
             imagen = mpimg.imread(path) # mpimg.imread lee los pixeles
             plt.imshow(imagen)
+            plt.axis("off")

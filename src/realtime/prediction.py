@@ -18,8 +18,8 @@ class Prediction:
         Entonces transformo cada frame a tensor (1, H, W, 1)
         """
 
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        resized = cv2.resize(gray, params[:2])
+        # gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        resized = cv2.resize(frame, params[:2])
         resized = resized.astype("float32")
         return resized.reshape(1, *params)
 

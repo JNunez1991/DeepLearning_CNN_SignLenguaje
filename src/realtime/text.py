@@ -14,7 +14,8 @@ class TextInFrame:
     def header(
         self,
         frame:np.ndarray,
-        text:str = "Presiona 'q' para salir.",
+        modelname:str,
+        # text:str = "Presiona 'q' para salir.",
         pos:tuple[int, int]=(20, 40),
         font:int=cv2.FONT_HERSHEY_SIMPLEX,
         font_scale:float=0.5, # tamaño de letra
@@ -24,7 +25,12 @@ class TextInFrame:
         bg_color:tuple[int,...]=(0,0,0), #color negro
     ) -> None:
         """Rectangulo negro con letras blancas para header"""
+
+        # Posicion horizontal y vertical
         x, y = pos
+
+        # Header
+        text = f"Modelo: {modelname.upper()}"
 
         # Tamaño del texto
         (text_w, text_h), baseline = cv2.getTextSize(
@@ -57,22 +63,65 @@ class TextInFrame:
         frame:np.ndarray,
         prediction:int,
         porc:float,
-        pos:tuple[int, int]=(20, 70),
+        pos:tuple[int, int]=(25, 120),
         font:int=cv2.FONT_HERSHEY_SIMPLEX,
         font_scale:float=0.5, # tamaño de letra
         font_color:tuple[int,...]=(0,0,0), # letras negras
         font_thickness:int=1, # 1: sin negrita, 2: negrita
         bg_padding:int=6,
         bg_color:tuple[int,...]=(255,255,255), #background blanco
+        border_color:tuple[int,...]=(0,0,0),
     ) -> None:
         """Rectangulo negro con letras blancas para header"""
-        x, y = pos
 
-        msg = f"Prediccion: {prediction}, Probabilidad: {porc*100:.2f}%"
+        x, y = pos
+        msg = f"Prediccion: {prediction}, Confianza: {porc*100:.2f}%"
 
         # Tamaño del texto
         (text_w, text_h), baseline = cv2.getTextSize(
             msg, font, font_scale, font_thickness
+        )
+
+        # Coordenadas de la caja (para no repetir cálculos)
+        top_left = (x - bg_padding, y - text_h - bg_padding)
+        bottom_right = (x + text_w + bg_padding, y + baseline + bg_padding)
+
+        # Rectángulo de fondo (relleno)
+        cv2.rectangle(frame, top_left, bottom_right, bg_color, -1)
+
+        # Borde fino (grosor 1)
+        cv2.rectangle(frame, top_left, bottom_right, border_color, 1)
+
+        cv2.putText(
+            frame,
+            msg,
+            (x, y),
+            font,
+            font_scale,
+            font_color,   # letras negras
+            font_thickness,
+            cv2.LINE_AA, # suaviza los bordes
+        )
+
+
+    def footer(
+        self,
+        frame:np.ndarray,
+        text:str = "Presiona 'q' para salir.",
+        pos:tuple[int, int]=(240, 470),
+        font:int=cv2.FONT_HERSHEY_SIMPLEX,
+        font_scale:float=0.5, # tamaño de letra
+        font_color:tuple[int,...]=(255, 255, 255), #color blanco
+        font_thickness:int=1, # 1: sin negrita, 2: negrita
+        bg_padding:int=6,
+        bg_color:tuple[int,...]=(0,0,0), #color negro
+    ) -> None:
+        """Rectangulo negro con letras blancas para header"""
+        x, y = pos
+
+        # Tamaño del texto
+        (text_w, text_h), baseline = cv2.getTextSize(
+            text, font, font_scale, font_thickness
         )
 
         # Rectángulo de fondo negro
@@ -86,7 +135,7 @@ class TextInFrame:
 
         cv2.putText(
             frame,
-            msg,
+            text,
             (x, y),
             font,
             font_scale,

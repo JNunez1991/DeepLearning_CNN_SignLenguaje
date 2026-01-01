@@ -24,7 +24,9 @@ class Camara:
     def initialize(
         self,
         model:Model,
-        params:tuple[int, ...]
+        modelname:str,
+        params:tuple[int, ...],
+        exit_keys = (ord('q'), ord('Q'))
     ) -> None:
         """Inicializa la webcam para la prediccion en tiempo real"""
 
@@ -40,17 +42,20 @@ class Camara:
             if not ret:
                 break
 
+            # Espejo
+            frame = cv2.flip(frame, 1)
+
             # ---- ROI (parametros) ----
             roi_size = params[0] * 2
             roi, (x1, y1, x2, y2) = self.roi.create(frame, roi_size)
 
             # ---- DETECCIÓN DE MANO (parche, mejor usar mediapipe) ----
-            if not self.hand.find(roi):
-                prediction = "NA"
-                porcentaje = 0.0
-            else:
+            if self.hand.find(roi):
                 input_tensor = self.prediction.preprocess_frame(roi, params)
                 prediction, porcentaje = self.prediction.predict(model, input_tensor)
+            else:
+                prediction = "NA"
+                porcentaje = 0.0
 
             # ---- BLUR ----
             blurred = cv2.GaussianBlur(frame, (75, 75), 0)
@@ -60,12 +65,13 @@ class Camara:
             cv2.rectangle(blurred, (x1, y1), (x2, y2), (0, 255, 0), 3)
 
             # ---- TEXTO EN PANTALLA ----
-            self.texto.header(blurred)
+            self.texto.header(blurred, modelname)
             self.texto.info(blurred, prediction, porcentaje) #type:ignore
+            self.texto.footer(blurred)
 
             cv2.imshow("Sign Language - Real Time", blurred)
 
-            if cv2.waitKey(1) & 0xFF == ord('q'):
+            if cv2.waitKey(1) & 0xFF in exit_keys:
                 break
 
         cap.release()

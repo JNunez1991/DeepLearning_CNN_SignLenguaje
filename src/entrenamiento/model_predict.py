@@ -12,7 +12,7 @@ from keras.preprocessing import image
 from keras.models import load_model, Model
 from matplotlib import pyplot as plt, image as mpimg
 
-from .blueprint import RutasProtocol, Colores
+from .blueprint import RutasProtocol#, Colores
 
 
 @dataclass
@@ -62,12 +62,12 @@ class ModelPredict:
             imagen = image.load_img(
                 img,
                 target_size=self.img_size,
-                color_mode=Colores.GRAYSCALE,
+                # color_mode=Colores.GRAYSCALE,
             )
 
             # Imagen a array + rescale + dimension extra para batch
             img_array = image.img_to_array(imagen)
-            img_array = img_array / 255.0
+            # img_array = img_array / 255.0    # porque no se reescalo en train
             img_array = np.expand_dims(img_array, axis=0)
 
             # Realizo la prediccion y la guardo
@@ -85,7 +85,7 @@ class ModelPredict:
         """Selecciona aleatoriamente una carpeta y muestra algunas imagenes"""
 
         plt.figure(figsize=(15,15))
-        plt.suptitle("Imagenes de Test", y=0.6)
+        plt.suptitle("Prediccion: Imagenes de Test", y=0.6)
 
         imgs_to_show = random.sample(filenames, nimages)
 
@@ -94,6 +94,7 @@ class ModelPredict:
             plt.subplot(1, nimages, idx+1)
             image_name = os.path.basename(img)
             pred = preds[image_name]
-            plt.title(f"Prediccion: {pred}")
+            plt.title(f"{image_name}: {pred}")
             imagen = mpimg.imread(os.path.abspath(img)) # mpimg.imread lee los pixeles
             plt.imshow(imagen)
+            plt.axis("off")

@@ -1,14 +1,17 @@
 #!/usr/bin/env python3
+# pylint: disable=wrong-import-position
 """Utilizo el modelo con mejores resulados, para predecir en tiempo real (con webcam)"""
 
 import os
 from dataclasses import dataclass, field
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2' # evita que aparezcan msjs de tensorflow
 
 import pyfiglet
 from keras.models import load_model
 
 from config import Rutas, ModelNames, ImageParameters
 from src.realtime.controller import Camara
+
 
 @dataclass
 class RealTime:
@@ -23,7 +26,7 @@ class RealTime:
         seleccion = self.seleccionar_opcion()
         path = os.path.join(Rutas.MODEL_PATH, f"model_{seleccion}.keras")
         model = load_model(path)
-        self.camara.initialize(model, ImageParameters.DIMS) # type:ignore
+        self.camara.initialize(model, seleccion, ImageParameters.DIMS) # type:ignore
 
     def print_header(self, texto:str, font="slant") -> None:
         """Titulo en consola"""
@@ -51,8 +54,8 @@ class RealTime:
         msg = \
         """ ¿Que modelo quiere utilizar?
         1. RAW
-        2. DATA AUGMENTATION
-        3. RAW + TRANSFER LEARNING
+        2. TRANSFER LEARNING
+        3. DATA AUGMENTATION
         4. DATA AUGMENTATION + TRANSFER LEARNING
         """
 
@@ -65,10 +68,10 @@ class RealTime:
             return ModelNames.RAW
 
         if option == 2:
-            return ModelNames.DATA_AUGMENTATION
+            return ModelNames.TRANSFER_LEARNING
 
         if option == 3:
-            return ModelNames.TRANSFER_LEARNING
+            return ModelNames.DATA_AUGMENTATION
 
         return ModelNames.TRANSFER_AND_AUGMENTATION
 
