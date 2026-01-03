@@ -156,6 +156,7 @@ cython_debug/
 *.docx
 *.csv
 *.tmp
-data/*
+data/raw/*
+data/processed/*
 logs/*
 models/*
