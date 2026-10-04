@@ -1,0 +1,25 @@
+[project]
+name = "deeplearning-cnn-signlenguaje"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "JNunez1991", email = "javiernicolasnunez1991@gmail.com" }
+]
+requires-python = ">=3.14"
+dependencies = [
+    "keras==3.12.0",
+    "matplotlib>=3.11.2",
+    "numpy>=2.5.3",
+    "opencv-python>=5.0.0.93",
+    "pyfiglet>=1.0.4",
+    "tensorflow>=2.22.0rc0",
+    "tqdm==4.66.3",
+]
+
+[project.scripts]
+deeplearning-cnn-signlenguaje = "deeplearning_cnn_signlenguaje:main"
+
+[build-system]
+requires = ["uv_build>=0.12.23,<0.13.0"]
+build-backend = "uv_build"
