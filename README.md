@@ -14,7 +14,7 @@
 
 
 ## 📌 Descripción
-Proyecto que busca entrenar una red neuronal convolucional (CNN) que permita predecir, en tiempo real, los numeros del 0 al 9 en lenguaje de señas, mediante la utilización de la camara incorporada al pc.
+Proyecto que entrena una red neuronal convolucional (CNN) que permita predecir, en tiempo real, los numeros del 0 al 9 en lenguaje de señas, mediante la utilización de la camara incorporada al pc.
 
 ## ⚠️ Disclaimer
 El proyecto no busca la excelencia.
