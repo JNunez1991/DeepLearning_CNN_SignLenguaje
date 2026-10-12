@@ -4,7 +4,7 @@
     <h1 style="margin: 0; font-size: 2.5em;">Sign Lenguaje</h1>
     <h4 style="margin: 5px 0 0 0; font-weight: normal; color: #888;">
       Entrenamiento y predicción en tiempo real de lenguaje de señas <br>
-      Deep Learning - Convolutional Neural Network
+      Deep Learning - Convolutional Neural Network (CNN)
     </h4>
   </div>
 
