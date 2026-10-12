@@ -28,7 +28,10 @@ class Main:
     def __post_init__(self):
         """Se ejecuta luego de instanciar la clase"""
 
-        self.folders = os.listdir(Rutas.IMGS_PATH)
+        self.folders = [
+            f for f in os.listdir(Rutas.IMGS_PATH)
+            if os.path.isdir(os.path.join(Rutas.IMGS_PATH, f))
+        ]
         self.nfolders = len(self.folders)
 
     def preprocess_images(self, train_size:float, val_size:float, ncopies:int=8) -> None:

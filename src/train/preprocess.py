@@ -79,9 +79,17 @@ class PreProcess:
                          colour="green",
                          desc="Copiando imagenes hacia Train/Test"):
 
-            files = glob(os.path.join(self.raw_images_path, fold, '*'))
-            train_imgs, temp = train_test_split( files, train_size=self.train_size )
-            val_imgs, test_imgs = train_test_split( temp, train_size= 1-self.val_size )
+            fold_path = os.path.join(self.raw_images_path, fold)
+            if not os.path.isdir(fold_path):
+                continue
+
+            files = glob(os.path.join(fold_path, '*'))
+            if not files:
+                print(f"  ⚠️  Carpeta vacía: {fold}")
+                continue
+
+            train_imgs, temp = train_test_split(files, train_size=self.train_size)
+            val_imgs, test_imgs = train_test_split(temp, train_size=1 - self.val_size)
 
             self.move_copies(train_imgs, self.train_path, str(fold))
             self.move_copies(val_imgs, self.validation_path, str(fold))

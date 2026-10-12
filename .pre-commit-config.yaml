@@ -1,0 +1,20 @@
+repos:
+  # Ganchos generales para limpieza de código y archivos
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace          # Elimina espacios al final de las líneas
+      - id: end-of-file-fixer            # Asegura que los archivos terminen con una nueva línea
+      - id: check-yaml                   # Verifica que los archivos YAML sean válidos
+      - id: check-added-large-files      # Evita subir archivos pesados por error (ej. >500KB)
+        args: ['--maxkb=500']
+      - id: check-ast                    # Comprueba que los archivos Python compilan bien
+      - id: debug-statements             # Detecta si dejaste un 'breakpoint()' o 'import ipdb' olvidado
+
+  # Ruff: Linter y formateador ultrarrápido para Python
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.9.0
+    hooks:
+      - id: ruff
+        args: [--fix]                    # Ejecuta el linter y corrige automáticamente lo que pueda
+      - id: ruff-format                  # Formatea el código (reemplaza a Black)

@@ -26,40 +26,8 @@ Las imagenes utilizadas para el entrenamiento son de dimensiones (100, 100, 3), 
 * **Visualización:** Prediccion en tiempo real mediante keras & OpenCV.
 
 ## 🛠️ Stack Tecnológico
-* **Lenguaje:** Python 3.11.7
-* **Librerías principales:** Tensorflow 2.20.0, Keras 3.12.0, Scikit-learn 1.8-0, Numpy 1.26.4
+* **Lenguaje:** Python 3.14.7
 * **Versionado:** GitHub.
-
-## 📋 Estructura del Repositorio
-```text
-├── data/
-  ├── raw                 # Contiene las subcarpetas con las imagenes
-  ├── processed           # Contiene las carpetas de train, validation y test
-├── notebooks/
-  ├── SignLenguaje.ipynb  # jupyter notebooks que ejecuta main_train.py (entrenamiento de modelos)
-├── models/               # carpeta donde se almacenan los modelos luego de entrenados
-├── logs/                 # logs generados durante el entrenamiento de los modelos
-├── src/
-  ├── entrenamiento
-    ├── augmentation.py   # para aumento de datos
-    ├── blueprint.py      # clases plantilla
-    ├── model.py          # modelado
-    ├── model_predict.py  # prediccion sobre imagenes de test
-    ├── preprocess.py     # distribuye las imagenes en subcarpetas de train/test
-    ├── visualize.py      # visualizacion de imagenes
-  ├── realtime
-    ├── controller.py     # orquestador del modulo
-    ├── hand_detection.py # deteccion de manos en el frame
-    ├── prediction.py     # prediccion sobre la imagen del frame
-    ├── roi.py            # genera la region de interes para la prediccion
-    ├── text.py           # textos en pantalla
-├── imgs/                 # imagenes auxiliares
-├── main_train.py         # logica para el entrenamiento de los modelos
-├── main_realtime.py      # logica para cargar modelo, iniciar la camara y predecir realtime
-├── config.py             # contiene variables estátticas como rutas o nombres
-├── requirements.txt      # Dependencias del proyecto
-└── README.md             # Documentación principal
-```
 
 ## 👣 Funcionamiento
 * **Entrenamiento**
