@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-#pylint: disable=line-too-long
+# pylint: disable=line-too-long
 """Modelo con el que se va a entrenar"""
 
 import os
@@ -12,19 +12,18 @@ from keras.preprocessing import image
 from keras.models import load_model, Model
 from matplotlib import pyplot as plt, image as mpimg
 
-from .blueprint import RutasProtocol#, Colores
+from config import Rutas
 
 
 @dataclass
 class ModelPredict:
     """Definicion del modelo a utilizar"""
 
-    rutas: RutasProtocol
-    modelname:str
-    img_size:tuple[int, ...]
-    plot:bool = False
-
-    full_model_name:str = field(init=False)
+    rutas: type[Rutas]
+    modelname: str
+    img_size: tuple[int, ...]
+    plot: bool = False
+    full_model_name: str = field(init=False)
 
     def __post_init__(self):
         """Se ejecuta luego de instanciar la clase"""
@@ -38,26 +37,25 @@ class ModelPredict:
 
         file_names = self.get_files_names()
         model = load_model(self.full_model_name)
-        resultados = self.create_predictions(file_names, model) # type:ignore
+        resultados = self.create_predictions(file_names, model)  # type:ignore
         if self.plot:
             self.show_predictions(file_names, resultados)
-        return resultados # type:ignore
+        return resultados  # type:ignore
 
     def get_files_names(self) -> list[str]:
         """Carga las imagnes en la carpeta Test"""
 
-        return glob( os.path.join(self.rutas.TEST_PATH, '*') )
+        return glob(os.path.join(self.rutas.TEST_PATH, "*"))
 
     def create_predictions(
         self,
-        filenames:list[str],
-        model:Model,
+        filenames: list[str],
+        model: Model,
     ) -> dict[str, str]:
         """Diccionario que tiene, para cada imagen la prediccion de la clase a la que pertenece"""
 
         resultados = {}
         for img in filenames:
-
             # Cargo la imagen con keras
             imagen = image.load_img(
                 img,
@@ -71,30 +69,30 @@ class ModelPredict:
             img_array = np.expand_dims(img_array, axis=0)
 
             # Realizo la prediccion y la guardo
-            prediction = model.predict(img_array, verbose=0) # type:ignore
+            prediction = model.predict(img_array, verbose=0)  # type:ignore
             resultados[os.path.basename(img)] = np.argmax(prediction, axis=1)[0]
 
         return resultados
 
     def show_predictions(
         self,
-        filenames:list[str],
-        preds:dict[str, str],
-        nimages:int = 5,
+        filenames: list[str],
+        preds: dict[str, str],
+        nimages: int = 5,
     ) -> None:
         """Selecciona aleatoriamente una carpeta y muestra algunas imagenes"""
 
-        plt.figure(figsize=(15,15))
+        plt.figure(figsize=(15, 15))
         plt.suptitle("Prediccion: Imagenes de Test", y=0.6)
 
         imgs_to_show = random.sample(filenames, nimages)
 
         # for idx, nombreimg in enumerate(imgs_to_show):
         for idx, img in enumerate(imgs_to_show):
-            plt.subplot(1, nimages, idx+1)
+            plt.subplot(1, nimages, idx + 1)
             image_name = os.path.basename(img)
             pred = preds[image_name]
             plt.title(f"{image_name}: {pred}")
-            imagen = mpimg.imread(os.path.abspath(img)) # mpimg.imread lee los pixeles
+            imagen = mpimg.imread(os.path.abspath(img))  # mpimg.imread lee los pixeles
             plt.imshow(imagen)
             plt.axis("off")

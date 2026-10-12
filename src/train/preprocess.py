@@ -9,25 +9,26 @@ from glob import glob
 from tqdm import tqdm
 from sklearn.model_selection import train_test_split
 
-from .blueprint import RutasProtocol
+from config import Rutas
 
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' # ignora los msjs de tensorflow
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"  # ignora los msjs de tensorflow
 
 
 class InvalidProportions(ValueError):
     """Las proporciones deben ser menor a uno"""
 
+
 @dataclass
 class PreProcess:
     """Clase que se encarga de analizar y pre-procesar las imagenes"""
 
-    rutas: RutasProtocol
-    train_size:float
-    val_size:float
+    rutas: type[Rutas]
+    train_size: float
+    val_size: float
     ncopies: int
-    train_path:str = field(init=False)
-    validation_path:str = field(init=False)
-    raw_images_path:str = field(init=False)
+    train_path: str = field(init=False)
+    validation_path: str = field(init=False)
+    raw_images_path: str = field(init=False)
 
     def __post_init__(self):
         """Se ejecuta luego de instanciar la clase"""
@@ -41,12 +42,12 @@ class PreProcess:
         self.test_path = os.path.abspath(self.rutas.TEST_PATH)
 
     def check_sizes(self) -> None:
-        """Corta la ejecucion si (train_size + val_size) > 1 """
+        """Corta la ejecucion si (train_size + val_size) > 1"""
 
         if self.train_size + self.val_size > 1:
             raise InvalidProportions("Las proporciones deben ser <= 1")
 
-    def run_all(self, nfolds:list[str]) -> None:
+    def run_all(self, nfolds: list[str]) -> None:
         """Se encarga de ejecutar el paso a paso del proyecto"""
 
         self.create_folders()
@@ -65,25 +66,22 @@ class PreProcess:
         if not os.path.exists(self.test_path):
             os.mkdir(self.test_path)
 
-    def create_folders_for_categories(self, nfolds:list[str]) -> None:
+    def create_folders_for_categories(self, nfolds: list[str]) -> None:
         """Si las carpetas de Train & Validation esetan vacias, creo las subcarpetas"""
 
         for fold in nfolds:
-            os.mkdir( os.path.join(self.train_path, str(fold)) )
-            os.mkdir( os.path.join(self.validation_path, str(fold)) )
+            os.mkdir(os.path.join(self.train_path, str(fold)))
+            os.mkdir(os.path.join(self.validation_path, str(fold)))
 
-    def copy_imgs_to_folder(self, nfolds:list[str]) -> None:
+    def copy_imgs_to_folder(self, nfolds: list[str]) -> None:
         """Obtengo el listado con el nombre completo de todas las imagenes"""
 
-        for fold in tqdm(nfolds,
-                         colour="green",
-                         desc="Copiando imagenes hacia Train/Test"):
-
+        for fold in tqdm(nfolds, colour="green", desc="Copiando imagenes hacia Train/Test"):
             fold_path = os.path.join(self.raw_images_path, fold)
             if not os.path.isdir(fold_path):
                 continue
 
-            files = glob(os.path.join(fold_path, '*'))
+            files = glob(os.path.join(fold_path, "*"))
             if not files:
                 print(f"  ⚠️  Carpeta vacía: {fold}")
                 continue
@@ -97,9 +95,9 @@ class PreProcess:
 
     def move_copies(
         self,
-        files:list[str],
-        dest_path:str,
-        fold:str | None = None,
+        files: list[str],
+        dest_path: str,
+        fold: str | None = None,
     ) -> None:
         """Genera copia de los archivos desde el origen a la subcarpeta destino"""
 
