@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-#pylint: disable=invalid-name
 """Rutas del proyecto"""
 
 import os
 from dataclasses import dataclass
 from enum import StrEnum
 from pathlib import Path
+
 
 class Rutas(StrEnum):
     """Rutas del proyecto"""
@@ -15,6 +15,7 @@ class Rutas(StrEnum):
     VAL_PATH = os.path.join(Path(__file__).resolve().parent, "data", "processed", "val")
     TEST_PATH = os.path.join(Path(__file__).resolve().parent, "data", "processed", "test")
     MODEL_PATH = os.path.join(Path(__file__).resolve().parent, "models")
+
 
 @dataclass
 class ImageParameters:
